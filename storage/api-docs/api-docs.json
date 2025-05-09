@@ -1,0 +1,135 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "CEP API",
+        "description": "API para consulta e cache de CEPs",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/cep/{cep}": {
+            "get": {
+                "tags": [
+                    "CEP"
+                ],
+                "summary": "Consulta um CEP",
+                "operationId": "7f25d9ed336937f82b3291d98477e5b1",
+                "parameters": [
+                    {
+                        "name": "cep",
+                        "in": "path",
+                        "description": "CEP a ser consultado (somente números ou com traço)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "01001-000"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dados do CEP encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "cep": {
+                                            "type": "string",
+                                            "example": "01001-000"
+                                        },
+                                        "logradouro": {
+                                            "type": "string",
+                                            "example": "Praça da Sé"
+                                        },
+                                        "complemento": {
+                                            "type": "string",
+                                            "example": "lado ímpar"
+                                        },
+                                        "unidade": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "bairro": {
+                                            "type": "string",
+                                            "example": "Sé"
+                                        },
+                                        "localidade": {
+                                            "type": "string",
+                                            "example": "São Paulo"
+                                        },
+                                        "uf": {
+                                            "type": "string",
+                                            "example": "SP"
+                                        },
+                                        "estado": {
+                                            "type": "string",
+                                            "example": "São Paulo"
+                                        },
+                                        "regiao": {
+                                            "type": "string",
+                                            "example": "Sudeste"
+                                        },
+                                        "ibge": {
+                                            "type": "string",
+                                            "example": "3550308"
+                                        },
+                                        "gia": {
+                                            "type": "string",
+                                            "example": "1004"
+                                        },
+                                        "ddd": {
+                                            "type": "string",
+                                            "example": "11"
+                                        },
+                                        "siafi": {
+                                            "type": "string",
+                                            "example": "7107"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "CEP inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid ZIP code format"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "CEP não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "ZIP code not found or invalid"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "CEP",
+            "description": "Operações relacionadas a CEP"
+        }
+    ]
+}
