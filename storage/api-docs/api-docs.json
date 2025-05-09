@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "CEP API",
-        "description": "API para consulta e cache de CEPs",
+        "description": "API for retrieving and managing Brazilian ZIP code data",
         "version": "1.0.0"
     },
     "paths": {
@@ -11,13 +11,14 @@
                 "tags": [
                     "CEP"
                 ],
-                "summary": "Consulta um CEP",
-                "operationId": "7f25d9ed336937f82b3291d98477e5b1",
+                "summary": "Fetch ZIP code data",
+                "description": "Retrieves information for a given ZIP code, using cache if available.",
+                "operationId": "171d18946ba045c6864e023906eba9be",
                 "parameters": [
                     {
                         "name": "cep",
                         "in": "path",
-                        "description": "CEP a ser consultado (somente números ou com traço)",
+                        "description": "ZIP code (with or without dash)",
                         "required": true,
                         "schema": {
                             "type": "string",
@@ -27,109 +28,116 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Dados do CEP encontrado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "cep": {
-                                            "type": "string",
-                                            "example": "01001-000"
-                                        },
-                                        "logradouro": {
-                                            "type": "string",
-                                            "example": "Praça da Sé"
-                                        },
-                                        "complemento": {
-                                            "type": "string",
-                                            "example": "lado ímpar"
-                                        },
-                                        "unidade": {
-                                            "type": "string",
-                                            "example": ""
-                                        },
-                                        "bairro": {
-                                            "type": "string",
-                                            "example": "Sé"
-                                        },
-                                        "localidade": {
-                                            "type": "string",
-                                            "example": "São Paulo"
-                                        },
-                                        "uf": {
-                                            "type": "string",
-                                            "example": "SP"
-                                        },
-                                        "estado": {
-                                            "type": "string",
-                                            "example": "São Paulo"
-                                        },
-                                        "regiao": {
-                                            "type": "string",
-                                            "example": "Sudeste"
-                                        },
-                                        "ibge": {
-                                            "type": "string",
-                                            "example": "3550308"
-                                        },
-                                        "gia": {
-                                            "type": "string",
-                                            "example": "1004"
-                                        },
-                                        "ddd": {
-                                            "type": "string",
-                                            "example": "11"
-                                        },
-                                        "siafi": {
-                                            "type": "string",
-                                            "example": "7107"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "ZIP code data returned successfully"
                     },
                     "422": {
-                        "description": "CEP inválido",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Invalid ZIP code format"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Invalid ZIP code"
                     },
                     "404": {
-                        "description": "CEP não encontrado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "ZIP code not found or invalid"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
+                        "description": "ZIP code not found"
+                    }
+                }
+            }
+        },
+        "/api/cep/{cep}/favorite": {
+            "post": {
+                "tags": [
+                    "CEP"
+                ],
+                "summary": "Add ZIP code to favorites",
+                "description": "Adds a ZIP code to the authenticated user's favorites.",
+                "operationId": "b17e7f1396c990a1aed549cc5fc76385",
+                "parameters": [
+                    {
+                        "name": "cep",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "01001-000"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nickname"
+                                ],
+                                "properties": {
+                                    "nickname": {
+                                        "type": "string",
+                                        "example": "Grandma's house"
+                                    }
+                                },
+                                "type": "object"
                             }
                         }
                     }
-                }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Favorite added successfully"
+                    },
+                    "409": {
+                        "description": "Already a favorite"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/cep/favorites": {
+            "get": {
+                "tags": [
+                    "CEP"
+                ],
+                "summary": "List user favorites",
+                "description": "Returns a paginated list of the authenticated user's favorite ZIP codes.",
+                "operationId": "541df5bfa5725770c7526a27385f7d0d",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated favorites list"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         }
     },
     "tags": [
         {
             "name": "CEP",
-            "description": "Operações relacionadas a CEP"
+            "description": "ZIP code operations"
         }
     ]
 }
