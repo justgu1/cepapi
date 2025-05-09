@@ -8,8 +8,69 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\Response;
 use App\Models\Cep;
 
+/**
+ * @OA\Info(
+ *     title="CEP API",
+ *     version="1.0.0",
+ *     description="API para consulta e cache de CEPs"
+ * )
+ *
+ * @OA\Tag(
+ *     name="CEP",
+ *     description="Operações relacionadas a CEP"
+ * )
+ */
 class CepController extends Controller
 {
+    /**
+ * @OA\Get(
+ *     path="/api/cep/{cep}",
+ *     summary="Consulta um CEP",
+ *     tags={"CEP"},
+ *     @OA\Parameter(
+ *         name="cep",
+ *         in="path",
+ *         required=true,
+ *         description="CEP a ser consultado (somente números ou com traço)",
+ *         @OA\Schema(type="string", example="01001-000")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Dados do CEP encontrado",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="cep", type="string", example="01001-000"),
+ *             @OA\Property(property="logradouro", type="string", example="Praça da Sé"),
+ *             @OA\Property(property="complemento", type="string", example="lado ímpar"),
+ *             @OA\Property(property="unidade", type="string", example=""),
+ *             @OA\Property(property="bairro", type="string", example="Sé"),
+ *             @OA\Property(property="localidade", type="string", example="São Paulo"),
+ *             @OA\Property(property="uf", type="string", example="SP"),
+ *             @OA\Property(property="estado", type="string", example="São Paulo"),
+ *             @OA\Property(property="regiao", type="string", example="Sudeste"),
+ *             @OA\Property(property="ibge", type="string", example="3550308"),
+ *             @OA\Property(property="gia", type="string", example="1004"),
+ *             @OA\Property(property="ddd", type="string", example="11"),
+ *             @OA\Property(property="siafi", type="string", example="7107")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=422,
+ *         description="CEP inválido",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Invalid ZIP code format")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="CEP não encontrado",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="ZIP code not found or invalid")
+ *         )
+ *     )
+ * )
+ */
+
     public function index()
     {
         return Inertia::render('Cep/Index');
@@ -28,7 +89,7 @@ class CepController extends Controller
         $cepData = Cep::where('cep', $cepFormatted)->first();
 
         if ($cepData) {
-            return response()->json($cepData);
+            return response()->json($cepData->makeHidden('id', 'created_at', 'updated_at'));
         }
 
         $response = $this->getExternalCep($cep);
