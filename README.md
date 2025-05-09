@@ -19,8 +19,8 @@ Este é um projeto Laravel que fornece uma API para consulta de CEPs e gerenciam
 Clone o repositório e instale as dependências:
 
 ```bash
-git clone https://github.com/seu-usuario/nome-do-projeto.git
-cd nome-do-projeto
+git clone https://github.com/justgu1/cepapi.git
+cd cepapi
 composer install
 cp .env.example .env
 php artisan key:generate
