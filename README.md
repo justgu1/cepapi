@@ -47,13 +47,17 @@ php artisan test
 
 ## 📋 Endpoints da API
 
-Consultar um CEP
+Você pode ver todos os endpoints detalhados com swagger:
+GET /api/documentation
 
+Consultar um CEP:
 GET /api/cep/{cep}
+
 Consulta um CEP no banco ou, caso não exista, via API externa.
 
-Adicionar CEP aos favoritos
+Adicionar CEP aos favoritos:
 POST /api/favorite/{cep}
+
 Requer autenticação. 
 Payload:
 
@@ -63,8 +67,9 @@ Payload:
 }
 ```
 
-Listar favoritos do usuário
+Listar favoritos do usuário:
 GET /api/my-list
+
 Requer autenticação.
 
 ---
