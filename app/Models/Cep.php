@@ -28,8 +28,8 @@ class Cep extends Model
     // get users using cep relation
     public function users()
     {
-        return $this->belongsToMany(User::class, 'cep_user')
-            ->withPivot('label')
+        return $this->belongsToMany(User::class, 'cep_user_pivot')
+            ->withPivot('nickname')
             ->withTimestamps();
     }
 }
